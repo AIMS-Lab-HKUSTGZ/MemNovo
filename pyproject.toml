@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memnovo"
+version = "0.1.0"
+description = "Training-free enhancement for de novo peptide sequencing"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+keywords = ["proteomics", "mass-spectrometry", "peptide-sequencing", "deep-learning"]
+
+dependencies = [
+    "torch>=2.0.0",
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.62.0",
+    "pyteomics>=4.5.0",
+    "matplotlib>=3.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+memnovo = "scripts.run_inference:main"
+
+[project.urls]
+Repository = "https://github.com/username/MemNovo"
+Documentation = "https://github.com/username/MemNovo#readme"
+
+[tool.setuptools.packages.find]
+include = ["memnovo*", "sensitivity_scaling*", "evaluation*", "case_studies*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310", "py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

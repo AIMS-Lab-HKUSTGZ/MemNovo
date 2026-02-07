@@ -1,0 +1,22 @@
+# Baseline InstaNovo Configuration
+# No MemNovo enhancement (for comparison)
+#
+# Use this configuration to run the baseline model without any
+# MemNovo modifications for fair comparison.
+
+model:
+  name: instanovo
+  checkpoint: weights/instanovo-v1.1.0.ckpt
+
+memnovo:
+  enabled: false               # MemNovo disabled
+
+inference:
+  beam_size: 5
+  batch_size: 64
+  max_length: 40
+  min_length: 1
+
+evaluation:
+  mass_tolerance: 50
+  normalize_il: true

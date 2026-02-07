@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# Download Nine Species benchmark dataset for MemNovo experiments
+#
+# This script provides instructions for downloading the dataset.
+# Due to the large size (~10GB), we provide manual download instructions.
+#
+# Usage:
+#   bash scripts/download_data.sh
+#
+
+set -e
+
+DATA_DIR="data"
+mkdir -p "$DATA_DIR"
+
+echo "========================================="
+echo "Nine Species Dataset Download Guide"
+echo "========================================="
+echo ""
+echo "The Nine Species benchmark dataset is used for evaluating"
+echo "de novo peptide sequencing models in the MemNovo paper."
+echo ""
+echo "Dataset Information:"
+echo "  - 9 taxonomically diverse species"
+echo "  - ~2.8 million spectra total"
+echo "  - High-resolution MS/MS data"
+echo "  - Used by Casanovo, InstaNovo, and other models"
+echo ""
+echo "Species included:"
+echo "  1. Bacillus-subtilis       (1,355,019 spectra)"
+echo "  2. Saccharomyces-cerevisiae  (583,801 spectra)"
+echo "  3. Methanosarcina-mazei      (266,983 spectra)"
+echo "  4. Apis-mellifera            (193,805 spectra)"
+echo "  5. Solanum-lycopersicum      (176,403 spectra)"
+echo "  6. Vigna-mungo               (108,266 spectra)"
+echo "  7. Candidatus-endoloripes     (81,626 spectra)"
+echo "  8. H.-sapiens                 (44,286 spectra)"
+echo "  9. Mus-musculus               (25,175 spectra)"
+echo ""
+echo "========================================="
+echo "Download Instructions"
+echo "========================================="
+echo ""
+echo "Option 1: Download from PRIDE/ProteomeXchange"
+echo "  The original data is available at:"
+echo "  https://www.ebi.ac.uk/pride/archive/"
+echo ""
+echo "Option 2: Use pre-processed MGF files"
+echo "  Several groups have made pre-processed versions available."
+echo "  Check the following repositories:"
+echo "  - Casanovo: https://github.com/Noble-Lab/casanovo"
+echo "  - InstaNovo: https://github.com/instadeepai/InstaNovo"
+echo ""
+echo "Option 3: Use example data"
+echo "  For quick testing, use the included sample file:"
+echo "  examples/sample_spectra.mgf (10 spectra)"
+echo ""
+echo "========================================="
+echo ""
+echo "After downloading, place MGF files in: $DATA_DIR/"
+echo ""
+echo "Expected structure:"
+echo "  $DATA_DIR/"
+echo "  ├── Bacillus-subtilis.mgf"
+echo "  ├── Saccharomyces-cerevisiae.mgf"
+echo "  ├── Methanosarcina-mazei.mgf"
+echo "  ├── Apis-mellifera.mgf"
+echo "  ├── Solanum-lycopersicum.mgf"
+echo "  ├── Vigna-mungo.mgf"
+echo "  ├── Candidatus-endoloripes.mgf"
+echo "  ├── H.-sapiens.mgf"
+echo "  └── Mus-musculus.mgf"
+echo ""
+echo "========================================="

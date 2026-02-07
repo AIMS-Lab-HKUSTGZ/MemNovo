@@ -1,0 +1,7 @@
+[submodule "external/casanovo"]
+	path = external/casanovo
+	url = https://github.com/Noble-Lab/casanovo.git
+
+[submodule "external/instanovo"]
+	path = external/instanovo
+	url = https://github.com/instadeepai/InstaNovo.git

@@ -1,0 +1,22 @@
+# Baseline Casanovo Configuration
+# No MemNovo enhancement (for comparison)
+#
+# Use this configuration to run Casanovo baseline without any
+# MemNovo modifications.
+
+model:
+  name: casanovo
+  checkpoint: weights/casanovo_v5_0_0.ckpt
+
+memnovo:
+  enabled: false               # MemNovo disabled
+
+inference:
+  beam_size: 5
+  batch_size: 128              # Casanovo can handle larger batches
+  max_length: 100
+  min_length: 1
+
+evaluation:
+  mass_tolerance: 50
+  normalize_il: true
