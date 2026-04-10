@@ -1,6 +1,6 @@
 model:
   name: casanovo
-  checkpoint: ../weights/casanovo_v5_0_0.ckpt
+  checkpoint: weights/casanovo_v5_0_0.ckpt
 
 memnovo:
   enabled: true

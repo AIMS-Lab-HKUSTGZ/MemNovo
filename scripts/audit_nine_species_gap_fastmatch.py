@@ -27,7 +27,7 @@ from replay_rerank_probe import (
     minmax,
     softmax,
 )
-from statistics_utils import normalize_peptide, normalize_ptm_format
+from evaluation.statistics_utils import normalize_peptide, normalize_ptm_format
 
 
 PAPER_REL_GAINS = {

@@ -33,7 +33,7 @@ from replay_rerank_probe import (
     peptide_ions,
     spectrum_match_score,
 )
-from statistics_utils import calculate_sequence_masses, normalize_ptm_format, parse_peptide_with_ptm
+from evaluation.statistics_utils import calculate_sequence_masses, normalize_ptm_format, parse_peptide_with_ptm
 
 
 def parse_args() -> argparse.Namespace:

@@ -23,7 +23,12 @@ if str(WORKSPACE_ROOT) not in sys.path:
     sys.path.insert(0, str(WORKSPACE_ROOT))
 
 from replay_rerank_probe import PROTON, WATER, align_spectra, build_candidates, diversity, entropy, load_spectra, softmax
-from statistics_utils import calculate_sequence_masses, normalize_peptide, normalize_ptm_format, parse_peptide_with_ptm
+from evaluation.statistics_utils import (
+    calculate_sequence_masses,
+    normalize_peptide,
+    normalize_ptm_format,
+    parse_peptide_with_ptm,
+)
 
 
 def parse_args() -> argparse.Namespace:

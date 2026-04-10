@@ -1,11 +1,11 @@
 model:
   name: primenovo
-  checkpoint: ../weights/model_massive.ckpt
+  checkpoint: weights/model_massive.ckpt
 
 primenovo:
   base_config: external/primenovo/config.yaml
   enable_neptune: false
-  load_file_name: ../weights/model_massive.ckpt
+  load_file_name: weights/model_massive.ckpt
 
 memnovo:
   enabled: true

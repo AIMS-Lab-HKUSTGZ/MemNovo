@@ -1,6 +1,6 @@
 model:
   name: instanovo
-  checkpoint: ../weights/instanovo-v1.1.0.ckpt
+  checkpoint: weights/instanovo-v1.1.0.ckpt
 
 memnovo:
   enabled: true
@@ -18,7 +18,7 @@ inference:
   device: cuda
   log_interval: 10
   use_knapsack: true
-  knapsack_path: ../knapsack_cache/instanovo_knapsack
+  knapsack_path: knapsack_cache/instanovo_knapsack
   fp16: false
   save_beams: true
   num_workers: 0

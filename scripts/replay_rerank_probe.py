@@ -23,7 +23,7 @@ if str(WORKSPACE_ROOT) not in sys.path:
 
 from evaluation.data_handler import DataHandler
 from evaluation.evaluator import Evaluator
-from statistics_utils import (
+from evaluation.statistics_utils import (
     calculate_sequence_masses,
     normalize_peptide,
     normalize_ptm_format,

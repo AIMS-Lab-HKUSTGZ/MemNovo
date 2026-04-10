@@ -4,7 +4,7 @@
 # Base model settings
 model:
   name: instanovo
-  checkpoint: ../weights/instanovo-v1.1.0.ckpt
+  checkpoint: weights/instanovo-v1.1.0.ckpt
 
 # Enhancement parameters
 memnovo:
@@ -22,7 +22,7 @@ inference:
   max_length: 30
   device: cuda
   use_knapsack: true
-  knapsack_path: ../knapsack_cache/instanovo_knapsack
+  knapsack_path: knapsack_cache/instanovo_knapsack
   fp16: true
 
 # Data settings
