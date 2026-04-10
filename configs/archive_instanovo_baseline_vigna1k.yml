@@ -1,0 +1,38 @@
+dataset:
+  format: mgf
+  max_charge: 4
+  max_spectra: null
+  path: /opt/data/private/instanovo/MemNovo/results/rebuttal_activation_ablation/subsets/Vigna-mungo_subset1000.mgf
+
+evaluation:
+  enabled: true
+  metrics:
+  - aa_precision
+  - aa_recall
+  - peptide_recall
+
+logging:
+  file: ""
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  level: INFO
+
+model:
+  instanovo:
+    batch_size: 64
+    beam_size: 5
+    model_path: /opt/data/private/instanovo/weights/instanovo-v1.1.0.ckpt
+    use_knapsack: true
+  name: instanovo
+
+multi_gpu:
+  devices:
+  - 0
+  enabled: false
+
+output:
+  details: true
+  formats:
+  - csv
+  - jsonl
+  output_dir: /opt/data/private/instanovo/MemNovo/results/archive_c4_probe_vigna1k
+  prefix: baseline

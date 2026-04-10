@@ -10,6 +10,7 @@ from typing import Dict, Any, List, Optional, Tuple
 from pathlib import Path
 import logging
 import json
+import argparse
 
 logger = logging.getLogger(__name__)
 
@@ -310,3 +311,27 @@ def generate_report(
             )
 
     logger.info(f"Report generated in {output_dir}")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Visualize sensitivity scaling results")
+    parser.add_argument("--input", required=True, help="Sensitivity results JSON file")
+    parser.add_argument("--output", required=True, help="Output figure path")
+    parser.add_argument(
+        "--metric",
+        default="aa_precision",
+        choices=["aa_precision", "aa_recall", "pep_precision", "pep_recall"],
+        help="Metric to visualize",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    with open(args.input, "r", encoding="utf-8") as handle:
+        results = json.load(handle)
+    plot_sensitivity_curves(results, output_path=args.output, metric=args.metric)
+
+
+if __name__ == "__main__":
+    main()

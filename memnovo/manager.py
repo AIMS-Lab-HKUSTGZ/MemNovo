@@ -28,17 +28,38 @@ class MemNovoManager:
         'residual_scale': 0.005,
         'apply_to_last_n_layers': 1,
         'confidence_threshold': None,
+        'memory_token_trim_left': 0,
+        'use_softmax': True,
     }
 
     def __init__(self, config: Dict[str, Any]):
         """Initialize MemNovo manager with configuration."""
-        self.config = config
-        self.enabled = config.get('enabled', True)
+        normalized = dict(config)
+
+        if 'apply_to_last_n_layers' not in normalized:
+            target_layers = normalized.get('target_layers')
+            if isinstance(target_layers, list) and target_layers:
+                normalized['apply_to_last_n_layers'] = len(target_layers)
+            elif isinstance(target_layers, int):
+                normalized['apply_to_last_n_layers'] = target_layers
+
+        if 'confidence_threshold' not in normalized:
+            use_gating = normalized.get('use_gating')
+            if use_gating is False:
+                normalized['confidence_threshold'] = None
+
+        self.config = normalized
+        self.enabled = normalized.get('enabled', True)
 
         # Get parameters with defaults
-        self.residual_scale = config.get('residual_scale', self.DEFAULT_CONFIG['residual_scale'])
-        self.apply_to_last_n_layers = config.get('apply_to_last_n_layers', self.DEFAULT_CONFIG['apply_to_last_n_layers'])
-        self.confidence_threshold = config.get('confidence_threshold', self.DEFAULT_CONFIG['confidence_threshold'])
+        self.residual_scale = normalized.get('residual_scale', self.DEFAULT_CONFIG['residual_scale'])
+        self.apply_to_last_n_layers = normalized.get('apply_to_last_n_layers', self.DEFAULT_CONFIG['apply_to_last_n_layers'])
+        self.confidence_threshold = normalized.get('confidence_threshold', self.DEFAULT_CONFIG['confidence_threshold'])
+        self.memory_token_trim_left = normalized.get(
+            'memory_token_trim_left',
+            self.DEFAULT_CONFIG['memory_token_trim_left'],
+        )
+        self.use_softmax = bool(normalized.get('use_softmax', self.DEFAULT_CONFIG['use_softmax']))
 
         # Initialize hook manager
         hook_config = {
@@ -46,6 +67,8 @@ class MemNovoManager:
             'residual_scale': self.residual_scale,
             'apply_to_last_n_layers': self.apply_to_last_n_layers,
             'confidence_threshold': self.confidence_threshold,
+            'memory_token_trim_left': self.memory_token_trim_left,
+            'use_softmax': self.use_softmax,
         }
         self.hook_manager = HookManager(hook_config)
 
@@ -55,7 +78,9 @@ class MemNovoManager:
         logger.info(
             f"MemNovoManager initialized: "
             f"scale={self.residual_scale}, layers={self.apply_to_last_n_layers}, "
-            f"confidence_gate={self.confidence_threshold}"
+            f"confidence_gate={self.confidence_threshold}, "
+            f"trim_left={self.memory_token_trim_left}, "
+            f"use_softmax={self.use_softmax}"
         )
 
     @classmethod

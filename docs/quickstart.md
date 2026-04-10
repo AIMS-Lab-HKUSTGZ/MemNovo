@@ -7,26 +7,22 @@ This guide demonstrates how to use MemNovo for enhanced de novo peptide sequenci
 ### 1. Load a Pre-trained Model with MemNovo
 
 ```python
-from memnovo import MemNovoModel
+from memnovo.models import MemNovoModel
 
 # Load InstaNovo with MemNovo enhancement
-model = MemNovoModel.from_pretrained(
-    base_model="instanovo",
-    config="configs/memnovo.yaml"
+model = MemNovoModel(
+    model_name="instanovo",
+    checkpoint_path="../weights/instanovo-v1.1.0.ckpt",
+    config_path="configs/memnovo_instanovo.yaml",
+    device="cuda",
 )
 ```
 
 ### 2. Run Inference
 
 ```python
-# Single spectrum inference
+# Single-file inference
 predictions = model.predict("path/to/spectra.mgf")
-
-# With custom batch size
-predictions = model.predict(
-    "path/to/spectra.mgf",
-    batch_size=32
-)
 ```
 
 ### 3. Evaluate Results
@@ -80,14 +76,14 @@ manager.unregister()
 ```bash
 # Run inference with default settings
 python scripts/run_inference.py \
-    --spectra data/spectra.mgf \
-    --output results/predictions.csv \
-    --config configs/memnovo.yaml
+    --input path/to/spectra.mgf \
+    --output predictions.jsonl \
+    --config configs/memnovo_instanovo.yaml
 
 # Compare with baseline
 python scripts/run_inference.py \
-    --spectra data/spectra.mgf \
-    --output results/baseline.csv \
+    --input path/to/spectra.mgf \
+    --output baseline.jsonl \
     --config configs/baseline_instanovo.yaml
 ```
 
@@ -96,3 +92,4 @@ python scripts/run_inference.py \
 - See [API Reference](api.md) for detailed documentation
 - See [Experiments](experiments.md) for reproducing paper results
 - See [Methods](methods.md) for technical details
+- See [PrimeNovo](primenovo.md) for the third-backbone extension

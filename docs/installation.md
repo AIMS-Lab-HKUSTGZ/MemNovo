@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.12+
 - PyTorch 2.0+
 - CUDA 11.8+ (for GPU acceleration)
 
@@ -11,7 +11,7 @@
 ### Using pip
 
 ```bash
-git clone https://github.com/username/MemNovo.git
+git clone https://github.com/SmallBlueWolf/MemNovo.git
 cd MemNovo
 pip install -e .
 ```
@@ -19,7 +19,7 @@ pip install -e .
 ### Using conda
 
 ```bash
-git clone https://github.com/username/MemNovo.git
+git clone https://github.com/SmallBlueWolf/MemNovo.git
 cd MemNovo
 conda env create -f environment.yml
 conda activate memnovo
@@ -30,25 +30,30 @@ pip install -e .
 
 ### Base Model Dependencies
 
-MemNovo requires either InstaNovo or Casanovo as the base model. Install one or both:
+The repository currently vendors the source trees used by the wrappers under:
 
-```bash
-# InstaNovo
-pip install instanovo
+- `external/casanovo`
+- `external/instanovo`
+- `external/primenovo`
 
-# Casanovo
-pip install casanovo
-```
+In the default local setup you do not need to install these separately before
+running the MemNovo scripts.
 
 ### Downloading Model Checkpoints
 
 ```bash
-# Download InstaNovo checkpoint
-bash scripts/download_models.sh instanovo
-
-# Download Casanovo checkpoint
-bash scripts/download_models.sh casanovo
+# Download InstaNovo + Casanovo checkpoints
+bash scripts/download_models.sh
 ```
+
+Expected checkpoint locations:
+
+- `weights/instanovo-v1.1.0.ckpt`
+- `weights/casanovo_v5_0_0.ckpt`
+- `weights/model_massive.ckpt` for PrimeNovo
+
+At present the helper script downloads the first two automatically. The
+PrimeNovo checkpoint should be placed manually at `weights/model_massive.ckpt`.
 
 ## Verifying Installation
 

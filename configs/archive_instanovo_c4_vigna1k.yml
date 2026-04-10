@@ -1,0 +1,46 @@
+dataset:
+  format: mgf
+  max_charge: 4
+  max_spectra: null
+  path: /opt/data/private/instanovo/MemNovo/results/rebuttal_activation_ablation/subsets/Vigna-mungo_subset1000.mgf
+
+evaluation:
+  enabled: true
+  metrics:
+  - aa_precision
+  - aa_recall
+  - peptide_recall
+
+logging:
+  file: ""
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  level: INFO
+
+model:
+  instanovo_real_memvr_c4:
+    batch_size: 64
+    beam_size: 5
+    crossatt_memvr_config:
+      enabled: true
+      position_aware: true
+      confusing_pairs_handling: true
+      trigger_end_ratio: 0.89
+      trigger_start_ratio: 0.33
+      uncertainty_threshold: 0.5
+      injection_ratio: 0.15
+    model_path: /opt/data/private/instanovo/weights/instanovo-v1.1.0.ckpt
+    use_knapsack: true
+  name: instanovo_real_memvr_c4
+
+multi_gpu:
+  devices:
+  - 1
+  enabled: false
+
+output:
+  details: true
+  formats:
+  - csv
+  - jsonl
+  output_dir: /opt/data/private/instanovo/MemNovo/results/archive_c4_probe_vigna1k
+  prefix: c4

@@ -1,56 +1,71 @@
 #!/bin/bash
-# Run sensitivity scaling experiments
 
-set -e
+set -euo pipefail
 
-# Configuration
-MODEL=${1:-"instanovo"}
-DATA_DIR=${2:-"data/nine_species"}
-OUTPUT_DIR=${3:-"results/sensitivity"}
-CHECKPOINT=${4:-"models/instanovo.ckpt"}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+WORKSPACE_ROOT="$(cd "${PROJECT_ROOT}/.." && pwd)"
 
-# Scale factors to test
-SCALE_FACTORS="0.0 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0"
+MODEL="${1:-instanovo}"
+OUTPUT_DIR="${2:-${PROJECT_ROOT}/results/sensitivity/${MODEL}}"
+CONFIG="${3:-}"
+DEVICE="${4:-cuda}"
+MAX_SAMPLES="${5:-}"
+EXTRA_ARGS=()
+
+if [[ -n "${MAX_SAMPLES}" ]]; then
+  EXTRA_ARGS+=(--max-samples "${MAX_SAMPLES}")
+fi
+
+case "${MODEL}" in
+  instanovo)
+    DEFAULT_CONFIG="${PROJECT_ROOT}/configs/baseline_instanovo.yaml"
+    DATA_PATH="${WORKSPACE_ROOT}/dataset/hc_pt/test.parquet"
+    SCALE_FACTORS="0.990 0.992 0.994 0.996 0.998 0.999 1.000 1.001 1.002 1.004 1.006 1.008 1.010"
+    ;;
+  casanovo)
+    DEFAULT_CONFIG="${PROJECT_ROOT}/configs/baseline_casanovo.yaml"
+    DATA_PATH="${WORKSPACE_ROOT}/dataset/novobench/test.parquet"
+    SCALE_FACTORS="0.1 0.2 0.5 1.0 1.5 2.0 3.0 5.0 10.0"
+    ;;
+  *)
+    echo "Unsupported model: ${MODEL}" >&2
+    exit 1
+    ;;
+esac
+
+if [[ -z "${CONFIG}" ]]; then
+  CONFIG="${DEFAULT_CONFIG}"
+fi
+
+mkdir -p "${OUTPUT_DIR}"
+RESULTS_JSON="${OUTPUT_DIR}/${MODEL}_sensitivity_results.json"
+ANALYSIS_JSON="${OUTPUT_DIR}/${MODEL}_analysis.json"
+CURVES_PDF="${OUTPUT_DIR}/${MODEL}_sensitivity_curves.pdf"
 
 echo "Running sensitivity scaling experiment"
-echo "Model: $MODEL"
-echo "Data: $DATA_DIR"
-echo "Output: $OUTPUT_DIR"
+echo "Model: ${MODEL}"
+echo "Config: ${CONFIG}"
+echo "Data: ${DATA_PATH}"
+echo "Output: ${OUTPUT_DIR}"
 
-mkdir -p "$OUTPUT_DIR"
+python "${PROJECT_ROOT}/sensitivity_scaling/experiment.py" \
+  --model "${MODEL}" \
+  --config "${CONFIG}" \
+  --data "${DATA_PATH}" \
+  --output "${RESULTS_JSON}" \
+  --modality both \
+  --scale-factors ${SCALE_FACTORS} \
+  "${EXTRA_ARGS[@]}" \
+  --device "${DEVICE}"
 
-# Run spectrum scaling
-echo "=== Spectrum Scaling ==="
-python -m sensitivity_scaling.experiment \
-    --model "$MODEL" \
-    --checkpoint "$CHECKPOINT" \
-    --data "$DATA_DIR" \
-    --modality spectrum \
-    --scale-factors $SCALE_FACTORS \
-    --output "$OUTPUT_DIR/spectrum_scaling.json"
+python "${PROJECT_ROOT}/sensitivity_scaling/analyze.py" \
+  --input "${RESULTS_JSON}" \
+  --output "${ANALYSIS_JSON}"
 
-# Run peptide scaling
-echo "=== Peptide Scaling ==="
-python -m sensitivity_scaling.experiment \
-    --model "$MODEL" \
-    --checkpoint "$CHECKPOINT" \
-    --data "$DATA_DIR" \
-    --modality peptide \
-    --scale-factors $SCALE_FACTORS \
-    --output "$OUTPUT_DIR/peptide_scaling.json"
+python "${PROJECT_ROOT}/sensitivity_scaling/visualize.py" \
+  --input "${RESULTS_JSON}" \
+  --output "${CURVES_PDF}" \
+  --metric aa_precision
 
-# Analyze results
-echo "=== Analysis ==="
-python -m sensitivity_scaling.analyze \
-    --spectrum-results "$OUTPUT_DIR/spectrum_scaling.json" \
-    --peptide-results "$OUTPUT_DIR/peptide_scaling.json" \
-    --output "$OUTPUT_DIR/analysis.json"
-
-# Generate visualization
-echo "=== Visualization ==="
-python -m sensitivity_scaling.visualize \
-    --spectrum-results "$OUTPUT_DIR/spectrum_scaling.json" \
-    --peptide-results "$OUTPUT_DIR/peptide_scaling.json" \
-    --output "$OUTPUT_DIR/sensitivity_curves.pdf"
-
-echo "Done! Results saved to $OUTPUT_DIR"
+echo "Done. Results saved to ${OUTPUT_DIR}"

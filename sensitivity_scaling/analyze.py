@@ -9,6 +9,7 @@ from typing import Dict, Any, List, Tuple, Optional
 import logging
 import json
 from pathlib import Path
+import argparse
 
 logger = logging.getLogger(__name__)
 
@@ -235,3 +236,20 @@ def summarize_experiments(
         }
 
     return summary
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Analyze sensitivity scaling results")
+    parser.add_argument("--input", required=True, help="Sensitivity results JSON file")
+    parser.add_argument("--output", default=None, help="Optional analysis JSON output")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    analysis = analyze_results(args.input, args.output)
+    print(json.dumps(analysis, indent=2))
+
+
+if __name__ == "__main__":
+    main()

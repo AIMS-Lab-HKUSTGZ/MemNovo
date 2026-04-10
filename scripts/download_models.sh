@@ -6,6 +6,9 @@
 # - InstaNovo v1.1.0 checkpoint
 # - Casanovo v5.0.0 checkpoint
 #
+# PrimeNovo currently uses a separate checkpoint (`model_massive.ckpt`) that is
+# expected to be placed manually under `weights/`.
+#
 # Usage:
 #   bash scripts/download_models.sh
 #
@@ -93,6 +96,9 @@ echo ""
 echo "Checkpoints saved to:"
 echo "  - $INSTANOVO_FILE"
 echo "  - $CASANOVO_FILE"
+echo ""
+echo "PrimeNovo note:"
+echo "  - place model_massive.ckpt at weights/model_massive.ckpt manually"
 echo ""
 echo "You can now run MemNovo with:"
 echo "  python scripts/run_inference.py --config configs/memnovo.yaml --input <your_data.mgf>"

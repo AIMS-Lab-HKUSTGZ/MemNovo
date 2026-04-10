@@ -6,16 +6,17 @@
 
 model:
   name: casanovo
-  checkpoint: weights/casanovo_v5_0_0.ckpt
+  checkpoint: ../weights/casanovo_v5_0_0.ckpt
 
 memnovo:
   enabled: false               # MemNovo disabled
 
 inference:
   beam_size: 5
-  batch_size: 128              # Casanovo can handle larger batches
+  batch_size: 64
   max_length: 100
   min_length: 1
+  log_interval: 10
 
 evaluation:
   mass_tolerance: 50

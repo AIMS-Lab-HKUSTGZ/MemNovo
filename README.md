@@ -8,20 +8,20 @@
 
 - Python 3.12 or higher
 - CUDA 11.8+ (for GPU acceleration)
-- Git with LFS support
 
-### Step 1: Clone Repository with Submodules
+### Step 1: Clone Repository
 
 ```bash
-git clone --recursive https://github.com/smallbluewolf/MemNovo.git
+git clone https://github.com/SmallBlueWolf/MemNovo.git
 cd MemNovo
 ```
 
-If you already cloned without `--recursive`:
+This repository vendors the base-model source trees used by the current
+MemNovo wrappers:
 
-```bash
-git submodule update --init --recursive
-```
+- `external/casanovo`
+- `external/instanovo`
+- `external/primenovo`
 
 ### Step 2: Create Conda Environment
 
@@ -49,8 +49,12 @@ bash scripts/download_models.sh
 ```
 
 This downloads:
-- InstaNovo v1.1.0 checkpoint (~500 MB)
-- Casanovo v5.0.0 checkpoint (~400 MB)
+- InstaNovo v1.1.0 checkpoint
+- Casanovo v5.0.0 checkpoint
+
+PrimeNovo uses a separate checkpoint (`model_massive.ckpt`) that is not
+auto-downloaded by the current script. See
+[docs/installation.md](docs/installation.md) for the expected path.
 
 ### Step 5: Download Datasets (Optional)
 
@@ -111,17 +115,28 @@ python scripts/run_inference.py \
 Quantify the sensitivity imbalance in baseline models:
 
 ```bash
-bash scripts/run_sensitivity.sh
+bash scripts/run_sensitivity.sh instanovo
+bash scripts/run_sensitivity.sh casanovo
 ```
 
-This runs feature scaling with factors [0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0] on both spectrum and peptide modalities. Results saved to `results/sensitivity/`.
+This uses the local workspace datasets referenced in the paper appendix:
+
+- `../dataset/hc_pt/test.parquet` for InstaNovo
+- `../dataset/novobench/test.parquet` for Casanovo
+
+The scaling range is model-specific:
+
+- Casanovo: `[0.1, 0.2, 0.5, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0]`
+- InstaNovo: `[0.990, ..., 1.010]`
+
+Results are saved under `results/sensitivity/<model>/`.
 
 Visualize results:
 
 ```bash
 python sensitivity_scaling/visualize.py \
-    --input results/sensitivity/ \
-    --output assets/sensitivity_curves.pdf
+    --input results/sensitivity/instanovo/instanovo_sensitivity_results.json \
+    --output assets/instanovo_sensitivity_curves.pdf
 ```
 
 ### Nine Species Benchmark (Table 2)
@@ -165,13 +180,13 @@ The default configuration:
 ```yaml
 model:
   name: instanovo
-  checkpoint: weights/instanovo-v1.1.0.ckpt
+  checkpoint: ../weights/instanovo-v1.1.0.ckpt
 
 memnovo:
   enabled: true
   residual_scale: 0.005        # 0.5% residual weight
-  target_layers: [-1]          # Only last layer
-  use_gating: false            # No gating
+  apply_to_last_n_layers: 1    # Final layer only
+  confidence_threshold: null   # Always-on injection
 ```
 
 ### Key Parameters
@@ -181,13 +196,13 @@ memnovo:
   - Lower: More conservative, safer but smaller gains
   - Higher: Stronger correction but risk of disruption
 
-- `target_layers`: Which decoder layers to inject memory
-  - [-1] (default): Final layer only, most stable
-  - [-2, -1]: Last 2 layers, moderate enhancement
+- `apply_to_last_n_layers`: Inject into the last `k` decoder layers
+  - 1 (default): Final layer only, most stable
+  - 2: Last 2 layers, stronger intervention
 
-- `use_gating`: Apply MemNovo only when model confidence is low
-  - false (default): Always apply
-  - true: Adaptive mode, only on uncertain predictions
+- `confidence_threshold`: Optional confidence gate
+  - null (default): Always apply
+  - numeric value: Only inject on low-confidence states
 
 ## Project Structure
 
@@ -219,14 +234,18 @@ MemNovo/
 │   ├── run_nine_species.sh  # Nine species evaluation
 │   └── download_*.sh        # Download helpers
 │
-├── examples/                # Example data
-│   └── sample_spectra.mgf   # 10 sample spectra for testing
+├── external/                # Vendored base-model source trees
+│   ├── casanovo/
+│   ├── instanovo/
+│   └── primenovo/
 │
 └── docs/                    # Documentation
     ├── installation.md      # Detailed installation
     ├── quickstart.md        # Tutorial
     ├── api.md               # API reference
-    └── methods.md           # Technical methods
+    ├── methods.md           # Technical methods
+    ├── experiments.md       # Reproduction guide
+    └── primenovo.md         # PrimeNovo extension notes
 ```
 
 ## API Reference

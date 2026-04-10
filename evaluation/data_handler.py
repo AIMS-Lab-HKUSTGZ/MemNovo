@@ -6,6 +6,7 @@ Utilities for loading and preprocessing mass spectrometry data.
 
 import numpy as np
 import pandas as pd
+import json
 from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 import logging
@@ -175,7 +176,21 @@ def save_predictions(
         output_path: Output file path
         format: Output format ('csv', 'tsv', 'json')
     """
-    df = pd.DataFrame(predictions)
+    serializable = []
+    for item in predictions:
+        row = dict(item)
+        if 'beam_predictions' in row and not isinstance(row['beam_predictions'], str):
+            row['beam_predictions'] = json.dumps(row['beam_predictions'], ensure_ascii=False)
+        serializable.append(row)
+
+    if format == 'jsonl':
+        with open(output_path, 'w', encoding='utf-8') as handle:
+            for item in predictions:
+                handle.write(json.dumps(item, ensure_ascii=False) + '\n')
+        logger.info(f"Saved {len(predictions)} predictions to {output_path}")
+        return
+
+    df = pd.DataFrame(serializable)
 
     if format == 'csv':
         df.to_csv(output_path, index=False)

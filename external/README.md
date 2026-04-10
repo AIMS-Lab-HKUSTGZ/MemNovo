@@ -1,46 +1,34 @@
 # External Dependencies
 
-This directory contains git submodules for base model implementations.
+This directory contains the vendored base-model source trees used by the
+current MemNovo wrappers.
 
-## Submodules
+## Included backbones
 
 ### Casanovo
 
-De novo mass spectrometry peptide sequencing with a transformer model.
-
-- Repository: https://github.com/Noble-Lab/casanovo
-- Paper: Yilmaz et al., Nature Communications 2024
-
-```bash
-# Initialize submodule
-git submodule update --init external/casanovo
-```
+- upstream repository: https://github.com/Noble-Lab/casanovo
+- role here:
+  - official encoder/decoder implementation for the Casanovo backend
+  - reused directly by the MemNovo wrappers
 
 ### InstaNovo
 
-De novo peptide sequencing with transformer architecture.
+- upstream repository: https://github.com/instadeepai/InstaNovo
+- role here:
+  - official transformer implementation for the InstaNovo backend
+  - reused directly by the MemNovo wrappers and official-predictor experiments
 
-- Repository: https://github.com/instadeepai/instanovo
-- Paper: Eloff et al., Nature Machine Intelligence 2025
+### PrimeNovo
 
-```bash
-# Initialize submodule
-git submodule update --init external/instanovo
-```
+- role here:
+  - vendored source tree for the PrimeNovo backbone used in the third-backbone
+    MemNovo extension experiments
 
-## Manual Installation
+## Notes
 
-If you prefer not to use submodules, install base models directly:
-
-```bash
-# Via pip
-pip install casanovo
-pip install instanovo
-
-# Or from source
-git clone https://github.com/Noble-Lab/casanovo.git
-cd casanovo && pip install -e .
-
-git clone https://github.com/instadeepai/instanovo.git
-cd instanovo && pip install -e .
-```
+- These directories are committed as regular source folders in this repository.
+- They are not expected to be initialized via `git submodule update`.
+- MemNovo itself remains training-free and plug-and-play with respect to the
+  pretrained checkpoints; vendoring these code snapshots is purely for
+  reproducible local execution.

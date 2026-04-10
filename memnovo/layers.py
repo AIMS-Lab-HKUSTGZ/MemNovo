@@ -92,9 +92,12 @@ class CrossAttentionRetrieval(nn.Module):
 
                 # Apply mask if provided
                 if spectral_mask is not None:
-                    # Expand mask: [batch, n_peaks] -> [batch, 1, n_peaks]
-                    mask = spectral_mask.unsqueeze(1)
-                    scores = scores.masked_fill(mask == 0, float('-inf'))
+                    # Expand invalid positions to [batch, 1, n_peaks].
+                    if spectral_mask.dtype == torch.bool:
+                        mask = spectral_mask.unsqueeze(1)
+                    else:
+                        mask = (spectral_mask <= 0).unsqueeze(1)
+                    scores = scores.masked_fill(mask, float('-inf'))
 
                 # Compute attention weights
                 if self.use_softmax:
@@ -173,8 +176,11 @@ class SpectrumEnhancer(nn.Module):
             ) / math.sqrt(self.dim_model)
 
             if spectral_mask is not None:
-                mask = spectral_mask.unsqueeze(1)
-                scores = scores.masked_fill(mask == 0, float('-inf'))
+                if spectral_mask.dtype == torch.bool:
+                    mask = spectral_mask.unsqueeze(1)
+                else:
+                    mask = (spectral_mask <= 0).unsqueeze(1)
+                scores = scores.masked_fill(mask, float('-inf'))
 
             attention = F.softmax(scores, dim=-1)
             attention = torch.nan_to_num(attention, nan=0.0)

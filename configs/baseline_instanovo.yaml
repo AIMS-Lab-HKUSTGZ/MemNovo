@@ -6,7 +6,7 @@
 
 model:
   name: instanovo
-  checkpoint: weights/instanovo-v1.1.0.ckpt
+  checkpoint: ../weights/instanovo-v1.1.0.ckpt
 
 memnovo:
   enabled: false               # MemNovo disabled
@@ -14,8 +14,15 @@ memnovo:
 inference:
   beam_size: 5
   batch_size: 64
-  max_length: 40
+  max_length: 30
   min_length: 1
+  log_interval: 10
+  use_knapsack: true
+  knapsack_path: ../knapsack_cache/instanovo_knapsack
+  fp16: false
+  save_beams: true
+  num_workers: 0
+  pin_memory: false
 
 evaluation:
   mass_tolerance: 50

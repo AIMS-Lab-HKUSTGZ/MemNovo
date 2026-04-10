@@ -40,29 +40,27 @@ Measure decoder sensitivity to each modality.
 ### Running the Experiment
 
 ```bash
-python -m sensitivity_scaling.experiment \
-    --model instanovo \
-    --checkpoint models/instanovo.ckpt \
-    --data data/nine_species/human/ \
-    --output results/sensitivity/ \
-    --scale-factors 0.0 0.25 0.5 0.75 1.0 1.25 1.5 1.75 2.0
+bash scripts/run_sensitivity.sh instanovo
+bash scripts/run_sensitivity.sh casanovo
+```
+
+Local default datasets:
+
+- InstaNovo: `../dataset/hc_pt/test.parquet` (`n = 26,536`)
+- Casanovo: `../dataset/novobench/test.parquet` (`n = 27,142`)
+
+For quick smoke tests:
+
+```bash
+bash scripts/run_sensitivity.sh instanovo results/sensitivity_smoke "" cuda 4
 ```
 
 ### Generating Plots
 
-```python
-from sensitivity_scaling.visualize import plot_sensitivity_curves
-
-# Load results
-spectrum_results = load_json("results/sensitivity/spectrum_scaling.json")
-peptide_results = load_json("results/sensitivity/peptide_scaling.json")
-
-# Generate comparison plot
-plot_sensitivity_curves(
-    spectrum_results,
-    peptide_results,
-    output_path="figures/sensitivity_comparison.pdf"
-)
+```bash
+python sensitivity_scaling/visualize.py \
+    --input results/sensitivity/instanovo/instanovo_sensitivity_results.json \
+    --output results/sensitivity/instanovo/instanovo_sensitivity_curves.pdf
 ```
 
 ### Expected Results
@@ -88,13 +86,13 @@ Or run individual species:
 ```bash
 # Single species evaluation
 python scripts/run_inference.py \
-    --spectra data/nine_species/human/*.mgf \
+    --input ../dataset/NS3/H.-sapiens.mgf \
     --output results/human_memnovo.csv \
     --config configs/memnovo.yaml
 
 # Baseline comparison
 python scripts/run_inference.py \
-    --spectra data/nine_species/human/*.mgf \
+    --input ../dataset/NS3/H.-sapiens.mgf \
     --output results/human_baseline.csv \
     --config configs/baseline_instanovo.yaml
 ```

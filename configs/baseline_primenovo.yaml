@@ -1,0 +1,22 @@
+model:
+  name: primenovo
+  checkpoint: ../weights/model_massive.ckpt
+
+primenovo:
+  base_config: external/primenovo/config.yaml
+  enable_neptune: false
+  load_file_name: ../weights/model_massive.ckpt
+
+memnovo:
+  enabled: false
+
+inference:
+  beam_size: 5
+  batch_size: 64
+  max_length: 40
+  fp16: false
+
+evaluation:
+  mass_tolerance: 50
+  normalize_il: true
+

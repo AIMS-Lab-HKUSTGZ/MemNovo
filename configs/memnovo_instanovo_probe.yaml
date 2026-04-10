@@ -1,0 +1,35 @@
+# InstaNovo + MemNovo probe configuration for throughput checks
+
+model:
+  name: instanovo
+  checkpoint: ../weights/instanovo-v1.1.0.ckpt
+
+memnovo:
+  enabled: true
+  residual_scale: 0.005
+  apply_to_last_n_layers: 1
+  confidence_threshold: null
+  target_layers: [-1]
+  use_gating: false
+
+inference:
+  batch_size: 64
+  beam_size: 5
+  max_length: 30
+  device: cuda
+  log_interval: 1
+  use_knapsack: true
+  knapsack_path: ../knapsack_cache/instanovo_knapsack
+  fp16: false
+  save_beams: false
+  num_workers: 0
+  pin_memory: false
+
+data:
+  min_mz: 50.0
+  max_mz: 2500.0
+  min_intensity: 0.01
+
+evaluation:
+  mass_tolerance: 50
+  normalize_il: true

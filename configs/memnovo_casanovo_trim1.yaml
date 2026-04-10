@@ -1,0 +1,29 @@
+# Casanovo MemNovo variant: trim latent spectrum token from spectral memory
+
+model:
+  name: casanovo
+  checkpoint: ../weights/casanovo_v5_0_0.ckpt
+
+memnovo:
+  enabled: true
+  residual_scale: 0.005
+  apply_to_last_n_layers: 1
+  confidence_threshold: null
+  target_layers: [-1]
+  use_gating: false
+  memory_token_trim_left: 1
+
+inference:
+  batch_size: 64
+  beam_size: 5
+  device: cuda
+  log_interval: 10
+
+data:
+  min_mz: 50.0
+  max_mz: 2500.0
+  min_intensity: 0.01
+
+evaluation:
+  mass_tolerance: 50
+  normalize_il: true
