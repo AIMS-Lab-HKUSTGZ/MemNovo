@@ -52,48 +52,9 @@ python scripts/run_inference.py \
 
 For the matching baseline, use `configs/baseline_instanovo.yaml`. Casanovo configurations are available as `configs/memnovo_casanovo.yaml` and `configs/baseline_casanovo.yaml`.
 
-## Nine Species benchmark: data provenance
+## Dataset
 
-The experiments use the **reprocessed Nine Species benchmark** associated with Casanovo, rather than the original DeepNovo V1 benchmark. This benchmark is often called the V2 version.
-
-- Original benchmark: Tran et al., *De novo peptide sequencing by deep learning* (2017).
-- Reprocessed benchmark used here: Wen and Noble, *A multi-species benchmark for training and validating mass spectrometry proteomics machine learning models* (2024), available from [Zenodo record 13685813](https://zenodo.org/records/13685813).
-
-The reprocessed release provides both `main` and `balanced` variants. For paper reproduction, begin from the full reprocessed data used by the Casanovo workflow; record the downloaded archive, checksum, and any local conversion steps in your experiment log.
-
-### Important note on reported spectrum counts
-
-MemNovo runs the official Casanovo and InstaNovo code paths and preserves their respective data loading, preprocessing, and input-validity rules. Therefore, the number reported for a particular experiment is the number of spectra that **enter that model's inference/evaluation pipeline**, not necessarily the raw PSM count in an upstream data archive. Some records can be excluded by model-specific preprocessing or input constraints.
-
-For reproducible comparisons, report all of the following with every run:
-
-- Zenodo archive and checksum;
-- upstream Casanovo/InstaNovo commit or release;
-- MemNovo commit and configuration file;
-- per-species input count and retained/inferred count; and
-- metric settings, including I/L normalization and mass tolerance.
-
-### Expected local layout
-
-The supplied nine-species scripts expect the following paths relative to the repository's parent directory:
-
-```text
-dataset/
-├── NS1/
-│   ├── Saccharomyces-cerevisiae.mgf
-│   └── Methanosarcina-mazei.mgf
-├── NS2/
-│   └── Bacillus-subtilis.mgf
-└── NS3/
-    ├── Apis-mellifera.mgf
-    ├── Solanum-lycopersicum.mgf
-    ├── Vigna-mungo.mgf
-    ├── Candidatus-endoloripes.mgf
-    ├── H.-sapiens.mgf
-    └── Mus-musculus.mgf
-```
-
-`scripts/download_data.sh` prints a data-acquisition guide. Before running the benchmark, place or link the annotated MGF files in the layout above, or update the paths in `scripts/run_nine_species.sh` for your local layout.
+For the Nine Species experiments, we use the same benchmark dataset as Casanovo. It is not directly sourced from the DeepNovo-DIA dataset.
 
 ## Reproducing the paper experiments
 
